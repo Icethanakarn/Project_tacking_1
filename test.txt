@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data table</title>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+</head>
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+<body>
+    <script>
+        var options = {
+  chart: {
+    title: 'Bar Chart Example',
+    subtitle: 'With Custom Colors',
+  },
+  bars: 'horizontal',
+  series: {
+    0: {
+      targetAxisIndex: 0
+    },
+    1: {
+      targetAxisIndex: 1
+    }
+  },
+  vAxes: {
+    0: {
+      title: 'A'
+    },
+    1: {
+      title: 'B'
+    }
+  },
+  colors: ['#a52714', '#097138']
+};
+
+
+<?php
+            //แสดงผลข้อมูลในฐานข้อมูล
+            while ($row = mysqli_fetch_assoc($result)) {  ?>
+                <div class="card col-sm-4 col-md-auto   shadow p-3 mb-5 mt-5 bg-body-tertiary rounded w-2">
+                    <div class="card-body ">
+                        <h2 class="card-title"><?php echo $row['project_name']; ?></h2>
+                        <h5>ผู้ดูแลโปรเจค</h5>
+                        <p><span><?php echo $row['owner_fname']; ?></span> <span><?php echo $row['owner_lname']; ?></span></p>
+                         
+                        <!-- //แปลงจากyyy/mm/dd => dd/mm/yyyy -->
+                        <p>วันที่โปรเจคต้องเสร็จ : <?php echo date("d-m-Y ", strtotime($row['dead_line'])) ?></p>
+                        
+                        <div class="progress h-1 m-2">
+                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 90%;">90%</div>
+                        </div>
+                        <!-- ส่งค่าด้วยวิธีQueryString -->
+                        <a href="mainpage.php?idp=<?php echo $row['project_id'] ?>" class="btn btn-primary">ดูรายละเอียดโปรเจค</a>
+                        <a href="deleteProject.php?iddel=<?php echo $row['project_id'] ?>&idtask=<?php echo $task['task_id'] ?>" class="btn btn-danger" onclick="return confirm('ต้องการลบโปรเจคนี้หรือไม่??')">ลบโปรเจค<i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+            <?php } ?>
+
+
+
+
+
+    </script>
+</body>
+
+
+
+
+
+
+
+7/02/2023
+</html>
+
+
+<?php
+require('dbconnect.php');
+
+$sql = "SELECT DISTINCT * FROM project_create
+right JOIN employees ON project_create.create_by = employees.emp_id
+GROUP BY employees.emp_id";
+$result = mysqli_query($con, $sql);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create_Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container-fulid">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top ">
+            <!-- Content -->
+            <div class="container-fluid">
+                <!-- Brand -->
+                <a href="index.php" class="navbar-brand">Project Tracking</a>
+                <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#Nav_bar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Menu -->
+                <div class="collapse navbar-collapse" id="Nav_bar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="index.php" class="nav-link">Create Project</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="task.php" class="nav-link">Task</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="display.php" class="nav-link">Display</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container shadow p-3 mb-5 mt-5 bg-body-tertiary rounded">
+
+            <form action="addProject.php" method="post" class="needs-validation">
+                <h1 class="text-center">สร้างโปรเจค</h1>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ชื่อโปรเจค</span>
+                    </div>
+                    <input type="text" name="project_Name" class="form-control" placeholder="ป้อนชื่อโปรเจค" id="projectname">
+                   
+                </div>
+                <!-- DropDownเจ้าของโปรเจค -->
+                <div class="input-group mt-3 row-12">
+                    <div class="input-group-prepend">
+                        <label for="employeesid" class=" input-group-text custom-select custom-select-sm">เจ้าของโปรเจค</label>
+                    </div>
+                    <input class="form-control" list="emp" id="employeesid" placeholder="ใส่รหัสพนักงานเพื่อค้นหา" name="idemp" autocomplete="off">
+                   
+                    <template id="resultstemplate">
+                        <?php foreach ($result as $id) { ?>
+
+                            <option value="<?php echo $id['emp_id'] ?>">
+                                <?php echo $id['emp_id'] . " " . $id['emp_fname'] . " " . $id['emp_lname'] ?></option>
+
+                        <?php   } ?>
+
+                    </template>
+                    <datalist id="emp"> </datalist>
+
+                </div>
+                <!-- รายละเอียดงาน -->
+                <div class="form-floating mt-3">
+                    <textarea id="detail" class="form-control" placeholder="รายละเอียดงานโปรเจค" name="detail"></textarea>
+                        <label for="detail">รายละเอียดงานโปรเจค</label>
+               
+                </div>
+
+                <div class="input-group mt-3 row-12">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text ">วันที่โปรเจคต้องเสร็จ</span>
+                    </div>
+                    <input type="date" name="dead_line" id="deadline" min="<?php echo date('Y-m-d'); ?>" class="form-control col-lg-4">
+                   
+                </div>
+
+                <div class="d-flex justify-content-end ">
+                    <button class="btn btn-success mt-3" type="submit">Submit</button>
+
+                </div>
+            </form>
+
+        
+
+        </div>
+
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
